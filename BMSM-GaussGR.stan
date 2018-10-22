@@ -24,6 +24,7 @@ parameters {
 real mu;
 real<lower=0.0> sigma;
 real<lower=0.0> norm;
+
 }
 
 model {
@@ -40,7 +41,12 @@ d_yields[n,y]~normal(yield(d_temp[n,y,:],mu, sigma, norm),1.0);
 
 generated quantities {
 real fdy[n_gf];
+real pred_yields[n_regions,n_years];
 for (i in 1:n_gf){
 fdy[i]=norm*exp(-0.5*square((temp[i]-mu)/sigma));
  }
+for (n in 1:n_regions){
+for (y in 1:n_years){
+pred_yields[n,y]=normal_rng(yield(d_temp[n,y,:],mu, sigma, norm),1.0);
 }
+}}
